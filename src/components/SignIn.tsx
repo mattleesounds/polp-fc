@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 declare global {
   interface Window {
@@ -8,11 +8,16 @@ declare global {
 }
 
 const SignIn = () => {
+  const [userFID, setUserFID] = useState<string | null>(null);
+
   useEffect(() => {
-    // Function to handle sign-in success
-    const handleSignInSuccess = (data: any) => {
+    const handleSignInSuccess = (data: {
+      signer_uuid: string;
+      fid: string;
+    }) => {
       console.log("Sign-in success with data:", data);
-      // do more sign in logic here
+      setUserFID(data.fid);
+      // more sign in logic
     };
 
     window.onSignInSuccess = handleSignInSuccess;
@@ -28,12 +33,15 @@ const SignIn = () => {
   }, []);
 
   return (
-    <div
-      className="neynar_signin"
-      data-client_id={process.env.NEYNAR_CLIENT_ID}
-      data-success-callback="onSignInSuccess"
-      data-theme="dark" // or "light"
-    />
+    <div>
+      <div
+        className="neynar_signin"
+        data-client_id={process.env.NEYNAR_CLIENT_ID}
+        data-success-callback="onSignInSuccess"
+        data-theme="dark"
+      />
+      <div>{userFID && <p>User FID: {userFID}</p>}</div>
+    </div>
   );
 };
 
